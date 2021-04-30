@@ -1,30 +1,30 @@
 model,singleCoreScore,multiCoreScore,type
-MacBook Pro (13-inch - Late 2020 - Apple M1 processor - 8 cores),1701,7358,mobile
-Mac mini (Late 2020 - Apple M1 processor - 8 cores),1710,7408,mobile
-MacBook Air (Late 2020 - Apple M1 processor - 8 cores),1700,7372,mobile
-MacBook Air (Early 2020 - Intel Core i7-1060NG7 processor - 4 cores),1126,3026,desktop
-MacBook Pro (13-inch Mid 2020 - Intel Core i7-1068NG7 processor - 4 cores),1236,4505,desktop
-Mac mini (Late 2018 - Intel Core i7-8700B processor - 6 cores),1099,5468,desktop
-iMac (27-inch Retina Mid 2020 - Intel Core i7-10700K processor - 8 cores),1252,8102,desktop
-AMD Ryzen 9 5950X (16 cores),1699,17027,desktop
-AMD Ryzen 7 5800X (8 cores),1687,1045,desktop
-AMD Ryzen 9 5900X (12 cores),1674,14249,desktop
-Intel Core i7-11370H (4 cores),1516,5011,desktop
-Intel Core i7-1185G7 (4 Cores),1429,4864,desktop
-Intel Core i5-11300H (4 cores),1408,4757,desktop
-Intel Core i9-10900K (10 cores),1397,10866,desktop
-Intel Core i9-10900KF (10 cores),1377,10787,desktop
-AMD Ryzen 7 5800H (8 cores),1363,7169,desktop
-AMD Ryzen 7 3800XT (8 cores),1347,9016,desktop
-AMD Ryzen Threadripper 3990X (64 cores),1207,24927,desktop
-AMD Ryzen Threadripper 3970X (32 cores),1260,22399,desktop
-Intel Xeon W-3175X (28 cores),1076,20162,desktop
-Intel Xeon W-3275M (28 cores),1028,18501,desktop
-iPhone 12 Pro Max (Apple A14 Bionic - 6 cores),1592,4107,mobile,desktop
-iPad Air (4th generation - Apple A14 Bionic - 6 cores),1585,4212,mobile
-iPhone 11 Pro (Apple A13 Bionic - 6 cores),1328,3325,mobile
-iPhone 12 (Apple A14 Bionic - 6 cores),1585,3967,mobile
-Samsung Galaxy S21+ 5G (Qualcomm Snapdragon 888 - 8 cores),1010,3107,mobile
-Samsung Galaxy S21+ 5G (Samsung Exynos 2100 - 8 cores),961,3149,mobile
-ASUS ROG Phone 3 (Qualcomm Snapdragon 865+ - 8 cores),951,3245,mobile
-Xiaomi Poco F2 Pro (Qualcomm Snapdragon 865 - 8 cores),888,3233,mobile
+MacBook Pro (13-inch - Late 2020 - Apple M1 processor - 8 cores),1701,7358,1
+Mac mini (Late 2020 - Apple M1 processor - 8 cores),1710,7408,1
+MacBook Air (Late 2020 - Apple M1 processor - 8 cores),1700,7372,1
+MacBook Air (Early 2020 - Intel Core i7-1060NG7 processor - 4 cores),1126,3026,0
+MacBook Pro (13-inch Mid 2020 - Intel Core i7-1068NG7 processor - 4 cores),1236,4505,0
+Mac mini (Late 2018 - Intel Core i7-8700B processor - 6 cores),1099,5468,0
+iMac (27-inch Retina Mid 2020 - Intel Core i7-10700K processor - 8 cores),1252,8102,0
+AMD Ryzen 9 5950X (16 cores),1699,17027,0
+AMD Ryzen 7 5800X (8 cores),1687,1045,0
+AMD Ryzen 9 5900X (12 cores),1674,14249,0
+Intel Core i7-11370H (4 cores),1516,5011,0
+Intel Core i7-1185G7 (4 Cores),1429,4864,0
+Intel Core i5-11300H (4 cores),1408,4757,0
+Intel Core i9-10900K (10 cores),1397,10866,0
+Intel Core i9-10900KF (10 cores),1377,10787,0
+AMD Ryzen 7 5800H (8 cores),1363,7169,0
+AMD Ryzen 7 3800XT (8 cores),1347,9016,0
+AMD Ryzen Threadripper 3990X (64 cores),1207,24927,0
+AMD Ryzen Threadripper 3970X (32 cores),1260,22399,0
+Intel Xeon W-3175X (28 cores),1076,20162,0
+Intel Xeon W-3275M (28 cores),1028,18501,0
+iPhone 12 Pro Max (Apple A14 Bionic - 6 cores),1592,4107,1,0
+iPad Air (4th generation - Apple A14 Bionic - 6 cores),1585,4212,1
+iPhone 11 Pro (Apple A13 Bionic - 6 cores),1328,3325,1
+iPhone 12 (Apple A14 Bionic - 6 cores),1585,3967,1
+Samsung Galaxy S21+ 5G (Qualcomm Snapdragon 888 - 8 cores),1010,3107,1
+Samsung Galaxy S21+ 5G (Samsung Exynos 2100 - 8 cores),961,3149,1
+ASUS ROG Phone 3 (Qualcomm Snapdragon 865+ - 8 cores),951,3245,1
+Xiaomi Poco F2 Pro (Qualcomm Snapdragon 865 - 8 cores),888,3233,1
