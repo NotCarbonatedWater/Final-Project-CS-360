@@ -1,450 +1,502 @@
 <!-- reference: https://bl.ocks.org/hrecht/f84012ee860cb4da66331f18d588eee3 -->
 <!-- reference: https://bl.ocks.org/d3noob/ddd7129c4486085937eb28da0d22a240 -->
-
+<!-- reference: https://www.w3schools.com/w3css/tryw3css_templates_dark_portfolio.htm -->
 
 <!DOCTYPE html>
-<meta charset="utf-8">
-
-<head>
-
-	<title>Final Project 360-01 By Jonathan Jaco</title>
-
-	<style>
-		.axis {
-			font: 14px sans-serif;
-		}
-
-		path {
-			stroke: steelblue;
-			stroke-width: 2;
-			fill: none;
-		}
-
-		.axis path,
-		.axis line {
-			fill: none;
-			shape-rendering: crispEdges;
-		}
-
-		.line {
-			fill: none;
-			stroke: steelblue;
-			stroke-width: 2px;
-		}
-	</style>
-</head>
-
-<body>
-
-	<p>Final Project: Mobile Processor Evolution</p>
-	<a href="https://github.com/NotCarbonatedWater/Final-Project-CS-360">Github Link</a>
-	<p>By Jonathan Jaco</p>
-	<p>The goal of this project will be to show trends of mobile processors, growth of companies behind them, sales of
-		models and how mobile processors are overall more efficient in power and costs and show why they will lead in
-		the tech market. I will also be comparing them to desktop processors.</p>
-	<p>Beta v0.0 Release:</p>
-	<p>Overview: At this stage, Data collection is almost complete (Just need to add new IMac info). I still need more
-		timme to complete my other two graphs and i need to work on the athestic off my webpage </p>
-	<p>Goals: Have atleast 5 of the following things in the list done by Sunday midnight</p>
-	<p>Todo list:</p>
-	<ol>
-		<li>complete line chart: make scale logarithmic and add labels/titles
-		<li>Complete my company stock comparsion charts
-		<li>Complete Race Bar Chart Sales
-		<li>Update processor data to include the newly released IMac
-		<li>Add "Ink" to tell what the graphs shows and means overall
-		<li>Fix athestics of webpage
-	</ol>
-
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
-	<div id="graphic"></div>
-	<div id="graphic2"></div>
-	<div id="graphic3"></div>
-
-	<script>
-		d3.csv("https://raw.githubusercontent.com/NotCarbonatedWater/Final-Project-CS-360/main/benchScores.csv", function (data) {
-			data.forEach(function (d) {
-				d.model = d.model;
-				d.singleCoreScore = +d.singleCoreScore;
-				d.type = +d.type;
-			});
-
-			data = data.sort(function (a, b) {
-				return d3.ascending(a.singleCoreScore, b.singleCoreScore);
-			})
-
-			var margin = {
-				top: 50,
-				right: 60,
-				bottom: 50,
-				left: 500
-			};
-
-			var width = screen.width - 25 - margin.left - margin.right,
-				height = 650 - margin.top - margin.bottom;
-
-			var svg = d3.select("#graphic").append("svg")
-				.attr("width", width + margin.left + margin.right)
-				.attr("height", height + margin.top + margin.bottom)
-				.append("g")
-				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-			var x = d3.scale.linear()
-				.range([0, width])
-				.domain([0, d3.max(data, function (d) {
-					return d.singleCoreScore;
-				})]);
-
-			var y = d3.scale.ordinal()
-				.rangeRoundBands([height, 0], .1)
-				.domain(data.map(function (d) {
-					return d.model;
-				}));
-
-			var yAxis = d3.svg.axis()
-				.scale(y)
-				.tickSize(0)
-				.orient("left");
-
-			var gy = svg.append("g")
-				.attr("class", "y axis")
-				.call(yAxis);
-
-			var bars = svg.selectAll(".bar")
-				.data(data)
-				.enter()
-				.append("g");
-
-			bars.append("rect")
-				.attr("class", "bar")
-				.attr("fill", function (d) {
-					if (d.type == 1) {
-						return "rgb(255,150,50)";
-					}
-					return "rgb(40,180,255)";
-				})
-				.attr("y", function (d) {
-					return y(d.model);
-				})
-				.attr("height", y.rangeBand())
-				.attr("x", 0)
-				.attr("width", function (d) {
-					return x(d.singleCoreScore);
-				});
-
-			bars.append("text")
-				.attr("class", "label")
-				.style("fill", "white")
-				.attr("y", function (d) {
-					return y(d.model) + y.rangeBand() / 2 + 4;
-				})
-				.attr("x", function (d) {
-					return x(d.singleCoreScore) - 38;
-				})
-				.text(function (d) {
-					return d.singleCoreScore;
-				});
-
-			svg.append("text")
-				.attr("x", (width / 2) - 40)
-				.attr("y", 0 - (margin.top / 2))
-				.attr("text-anchor", "middle")
-				.style("font-size", "20px")
-				.style("text-decoration", "underline")
-				.text("Single-Core Benchscores of Top Processors");
-
-			svg.append("text")
-				.attr("class", "x label")
-				.attr("text-anchor", "middle")
-				.attr("x", (width / 2) - 40)
-				.attr("y", height + 20)
-				.style("font-size", "18px")
-				.text("Bench Score");
-
-			svg.append("text")
-				.attr("class", "y label")
-				.attr("text-anchor", "end")
-				.attr("x", 0 - 200)
-				.attr("y", 0 - 20)
-				.style("font-size", "18px")
-				.text("Model");
-
-			svg.append("text")
-				.attr("x", (width / 2) - 40)
-				.attr("y", height + 40)
-				.attr("text-anchor", "middle")
-				.style("font-size", "12px")
-				.style("text-decoration", "underline")
-				.text("(sourced from geekbench.com)");
-
-			svg.append('rect')
-				.attr('x', 1000)
-				.attr('y', 600)
-				.attr('width', 20)
-				.attr('height', 20)
-				.attr('stroke', 'black')
-				.attr('fill', "rgb(40,180,255)");
-
-			svg.append('text')
-				.attr('x', 1030)
-				.attr('y', 615)
-				.attr("text-anchor", "left")
-				.style("font-size", "16px")
-				.text("Desktop");
-
-			svg.append('rect')
-				.attr('x', 1000)
-				.attr('y', 650)
-				.attr('width', 20)
-				.attr('height', 20)
-				.attr('stroke', 'black')
-				.attr('fill', "rgb(255,150,50)");
-
-			svg.append('text')
-				.attr('x', 1030)
-				.attr('y', 665)
-				.attr("text-anchor", "left")
-				.style("font-size", "16px")
-				.text("Mobile");
-		});
-
-	</script>
-
-
-	<script>
-		d3.csv("https://raw.githubusercontent.com/NotCarbonatedWater/Final-Project-CS-360/main/benchScores.csv", function (data) {
-			data.forEach(function (d) {
-				d.model = d.model;
-				d.multiCoreScore = +d.multiCoreScore;
-				d.type = +d.type;
-			});
-
-			data = data.sort(function (a, b) {
-				return d3.ascending(a.multiCoreScore, b.multiCoreScore);
-			})
-
-			var margin = {
-				top: 50,
-				right: 60,
-				bottom: 50,
-				left: 500
-			};
-
-			var width = screen.width - 25 - margin.left - margin.right,
-				height = 650 - margin.top - margin.bottom;
-
-			var svg = d3.select("#graphic2").append("svg")
-				.attr("width", width + margin.left + margin.right)
-				.attr("height", height + margin.top + margin.bottom)
-				.append("g")
-				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-			var x = d3.scale.linear()
-				.range([0, width])
-				.domain([0, d3.max(data, function (d) {
-					return d.multiCoreScore;
-				})]);
-
-			var y = d3.scale.ordinal()
-				.rangeRoundBands([height, 0], .1)
-				.domain(data.map(function (d) {
-					return d.model;
-				}));
-
-			var yAxis = d3.svg.axis()
-				.scale(y)
-				.tickSize(0)
-				.orient("left");
-
-			var gy = svg.append("g")
-				.attr("class", "y axis")
-				.call(yAxis);
-
-			var bars = svg.selectAll(".bar")
-				.data(data)
-				.enter()
-				.append("g");
-
-			bars.append("rect")
-				.attr("class", "bar")
-				.attr("fill", function (d) {
-					if (d.type == 1) {
-						return "rgb(255,150,50)";
-					}
-					return "rgb(40,180,255)";
-				})
-				.attr("y", function (d) {
-					return y(d.model);
-				})
-				.attr("height", y.rangeBand())
-				.attr("x", 0)
-				.attr("width", function (d) {
-					return x(d.multiCoreScore);
-				});
-
-			bars.append("text")
-				.attr("class", "label")
-				.style("fill", "white")
-				.attr("y", function (d) {
-					return y(d.model) + y.rangeBand() / 2 + 4;
-				})
-				.attr("x", function (d) {
-					return x(d.multiCoreScore) - 48;
-				})
-				.text(function (d) {
-					return d.multiCoreScore;
-				});
-
-			svg.append("text")
-				.attr("x", (width / 2) - 40)
-				.attr("y", 0 - (margin.top / 2))
-				.attr("text-anchor", "middle")
-				.style("font-size", "20px")
-				.style("text-decoration", "underline")
-				.text("Multi-Core Benchscores of Top Processors");
-
-			svg.append("text")
-				.attr("class", "x label")
-				.attr("text-anchor", "middle")
-				.attr("x", (width / 2) - 40)
-				.attr("y", height + 20)
-				.style("font-size", "18px")
-				.text("Bench Score");
-
-			svg.append("text")
-				.attr("class", "y label")
-				.attr("text-anchor", "end")
-				.attr("x", 0 - 200)
-				.attr("y", 0 - 20)
-				.style("font-size", "18px")
-				.text("Model");
-
-			svg.append("text")
-				.attr("x", (width / 2) - 40)
-				.attr("y", height + 40)
-				.attr("text-anchor", "middle")
-				.style("font-size", "12px")
-				.style("text-decoration", "underline")
-				.text("(sourced from geekbench.com)");
-
-			svg.append('rect')
-				.attr('x', 1000)
-				.attr('y', 600)
-				.attr('width', 20)
-				.attr('height', 20)
-				.attr('stroke', 'black')
-				.attr('fill', "rgb(40,180,255)");
-
-			svg.append('text')
-				.attr('x', 1030)
-				.attr('y', 615)
-				.attr("text-anchor", "left")
-				.style("font-size", "16px")
-				.text("Desktop");
-
-			svg.append('rect')
-				.attr('x', 1000)
-				.attr('y', 650)
-				.attr('width', 20)
-				.attr('height', 20)
-				.attr('stroke', 'black')
-				.attr('fill', "rgb(255,150,50)");
-
-			svg.append('text')
-				.attr('x', 1030)
-				.attr('y', 665)
-				.attr("text-anchor", "left")
-				.style("font-size", "16px")
-				.text("Mobile");
-		});
-
-
-	</script>
-
-	<script>
-
-
-		var margin = { top: 30, right: 40, bottom: 50, left: 200 },
-			width = screen.width - 25 - margin.left - margin.right,
-			height = 600 - margin.top - margin.bottom;
-
-		var parseDate = d3.time.format("%Y").parse;
-
-		var x = d3.time.scale().range([0, width]);
-		var y0 = d3.scale.linear().range([height, 0]);
-
-		var xAxis = d3.svg.axis().scale(x)
-			.orient("bottom").ticks(5);
-
-		var yAxisLeft = d3.svg.axis().scale(y0)
-			.orient("left").ticks(5);
-
-
-		var valueline = d3.svg.line()
-			.x(function (d) { return x(d.year); })
-			.y(function (d) { return y0(d.numTrans); });
-
-		var svg = d3.select("body")
-			.append("svg")
-			.attr("width", width + margin.left + margin.right)
-			.attr("height", height + margin.top + margin.bottom)
-			.append("g")
-			.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-		// Get the data
-		d3.csv("https://raw.githubusercontent.com/NotCarbonatedWater/Final-Project-CS-360/main/numTran.csv", function (error, data) {
-			data.forEach(function (d) {
-				d.year = parseDate(d.year);
-				d.numTrans = +d.numTrans;
-			});
-
-			// Scale the range of the data
-			x.domain(d3.extent(data, function (d) { return d.year; }));
-			y0.domain([0, d3.max(data, function (d) {
-				return Math.max(d.numTrans);
-			})]);
-
-			svg.append("path")        // Add the valueline path.
-				.attr("d", valueline(data));
-
-			svg.append("g")            // Add the X Axis
-				.attr("class", "x axis")
-				.attr("transform", "translate(0," + height + ")")
-				.call(xAxis);
-
-			svg.append("g")
-				.attr("class", "y axis")
-				.style("fill", "steelblue")
-				.call(yAxisLeft);
-
-			svg.append("text")
-				.attr("x", (width / 2) - 40)
-				.attr("y", 0 - (margin.top / 2))
-				.attr("text-anchor", "middle")
-				.style("font-size", "20px")
-				.style("text-decoration", "underline")
-				.text("Number of Transitors in processors over the years");
-
-				svg.append("text")
-				.attr("class", "x label")
-				.attr("text-anchor", "middle")
-				.attr("x", (width / 2) - 40)
-				.attr("y", height + 50)
-				.style("font-size", "18px")
-				.text("Year (1971 - 2019)");
-
-				svg.append("text")
-				.attr("class", "y label")
-				.attr("text-anchor", "end")
-				.attr("x", 0 -10)
-				.attr("y", 0 -10)
-				.style("font-size", "18px")
-				.text("Number of Transitors");
-
-		});
-
-
-	</script>
-
+<html>
+<title>Final Project</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+    body,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-family: "Montserrat", sans-serif
+    }
+
+    .axis {
+        stroke: white;
+        font: 12px "Montserrat", sans-serif;
+    }
+
+    path {
+        stroke: red;
+        stroke-width: 2;
+        fill: none;
+    }
+
+    .axis path {
+        stroke: white;
+    }
+
+    .axis line {
+        fill: none;
+        shape-rendering: crispEdges;
+    }
+
+    .line {
+        fill: none;
+        stroke: white;
+        stroke-width: 2px;
+    }
+</style>
+
+<body class="w3-black">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+
+
+    <!-- Page Content -->
+    <div class="w3-padding-large" id="main">
+        <!-- Header/Home -->
+        <header class="w3-container w3-padding-32 w3-center w3-black" id="home">
+            <h1 class="w3-jumbo"><span class="w3-hide-small">Final Project: </span>Mobile Processor Evolution</h1>
+            <a href="https://github.com/NotCarbonatedWater/Final-Project-CS-360">Github Link</a>
+            <p>By Jonathan Jaco</p>
+            <p>CS 360 - Section 1</p>
+            <img src="apple-m1-chip.jpg" alt="apple-m1-chip" class="w3-image" width="992" height="1108">
+        </header>
+
+        <!-- Objective -->
+        <div class="w3-content w3-justify w3-text-grey w3-padding-64" id="about">
+            <h2 class="w3-text-light-grey">Objective</h2>
+            <hr style="width:200px" class="w3-opacity">
+            <p>The goal of this project will be to show trends of mobile processors, growth of companies behind them,
+                sales of models and how mobile processors are overall more efficient in power and costs and show why
+                they will lead in the tech market. I will also be comparing them to desktop processors.
+            </p>
+        </div>
+
+
+
+        <div class="w3-content w3-justify w3-text-grey w3-padding-64" id="about">
+            <h2 class="w3-text-light-grey">Benchscores</h2>
+            <hr style="width:200px" class="w3-opacity">
+        </div>
+        <div id="graphic"></div>
+        <p></p>
+        <div id="graphic2"></div>
+        <div class="w3-content w3-justify w3-text-grey w3-padding-64" id="about">
+            <h2 class="w3-text-light-grey">Transitors</h2>
+            <hr style="width:200px" class="w3-opacity">
+        </div>
+        <div id="graphic3"></div>
+
+    </div>
+
+
+
+    <script>
+        d3.csv("https://raw.githubusercontent.com/NotCarbonatedWater/Final-Project-CS-360/main/benchScores.csv", function (data) {
+            data.forEach(function (d) {
+                d.model = d.model;
+                d.singleCoreScore = +d.singleCoreScore;
+                d.type = +d.type;
+            });
+
+            data = data.sort(function (a, b) {
+                return d3.ascending(a.singleCoreScore, b.singleCoreScore);
+            })
+
+            var margin = {
+                top: 50,
+                right: 250,
+                bottom: 50,
+                left: 500
+            };
+
+            var width = screen.width - 25 - margin.left - margin.right,
+                height = 650 - margin.top - margin.bottom;
+
+            var svg = d3.select("#graphic").append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            var x = d3.scale.linear()
+                .range([0, width])
+                .domain([0, d3.max(data, function (d) {
+                    return d.singleCoreScore;
+                })]);
+
+            var y = d3.scale.ordinal()
+                .rangeRoundBands([height, 0], .1)
+                .domain(data.map(function (d) {
+                    return d.model;
+                }));
+
+            var yAxis = d3.svg.axis()
+                .scale(y)
+                .tickSize(0)
+                .orient("left");
+
+            var gy = svg.append("g")
+                .attr("class", "y axis")
+                .call(yAxis);
+
+            var bars = svg.selectAll(".bar")
+                .data(data)
+                .enter()
+                .append("g");
+
+            bars.append("rect")
+                .attr("class", "bar")
+                .attr("fill", function (d) {
+                    if (d.type == 1) {
+                        return "rgb(255,150,50)";
+                    }
+                    return "rgb(40,180,255)";
+                })
+                .attr("y", function (d) {
+                    return y(d.model);
+                })
+                .attr("height", y.rangeBand())
+                .attr("x", 0)
+                .attr("width", function (d) {
+                    return x(d.singleCoreScore);
+                });
+
+            bars.append("text")
+                .attr("class", "label")
+                .style("fill", "white")
+                .attr("y", function (d) {
+                    return y(d.model) + y.rangeBand() / 2 + 5;
+                })
+                .attr("x", function (d) {
+                    return x(d.singleCoreScore) - 38;
+                })
+                .text(function (d) {
+                    return d.singleCoreScore;
+                });
+
+            svg.append("text")
+                .style("fill", "white")
+                .attr("x", (width / 2) - 40)
+                .attr("y", 0 - (margin.top / 2))
+                .attr("text-anchor", "middle")
+                .style("font-size", "20px")
+                .style("text-decoration", "underline")
+                .text("Single-Core Benchscores of Top Processors");
+
+            svg.append("text")
+                .style("fill", "white")
+                .attr("class", "x label")
+                .attr("text-anchor", "middle")
+                .attr("x", (width / 2) - 40)
+                .attr("y", height + 20)
+                .style("font-size", "18px")
+                .text("Bench Score");
+
+            svg.append("text")
+                .style("fill", "white")
+                .attr("class", "y label")
+                .attr("text-anchor", "end")
+                .attr("x", 0 - 200)
+                .attr("y", 0 - 20)
+                .style("font-size", "18px")
+                .text("Model");
+
+            svg.append("text")
+                .style("fill", "white")
+                .attr("x", (width / 2) - 40)
+                .attr("y", height + 40)
+                .attr("text-anchor", "middle")
+                .style("font-size", "12px")
+                .style("text-decoration", "underline")
+                .text("(sourced from geekbench.com)");
+
+            svg.append('rect')
+                .attr('x', 1000 - 200)
+                .attr('y', 500)
+                .attr('width', 20)
+                .attr('height', 20)
+                .attr('stroke', 'black')
+                .attr('fill', "rgb(40,180,255)");
+
+            svg.append('text')
+                .style("fill", "white")
+                .attr('x', 1030 - 200)
+                .attr('y', 515)
+                .attr("text-anchor", "left")
+                .style("font-size", "16px")
+                .text("Desktop");
+
+            svg.append('rect')
+                .attr('x', 1000 - 200)
+                .attr('y', 550)
+                .attr('width', 20)
+                .attr('height', 20)
+                .attr('stroke', 'black')
+                .attr('fill', "rgb(255,150,50)");
+
+            svg.append('text')
+                .style("fill", "white")
+                .attr('x', 1030 - 200)
+                .attr('y', 565)
+                .attr("text-anchor", "left")
+                .style("font-size", "16px")
+                .text("Mobile");
+        });
+
+    </script>
+
+    <script>
+        d3.csv("https://raw.githubusercontent.com/NotCarbonatedWater/Final-Project-CS-360/main/benchScores.csv", function (data) {
+            data.forEach(function (d) {
+                d.model = d.model;
+                d.multiCoreScore = +d.multiCoreScore;
+                d.type = +d.type;
+            });
+
+            data = data.sort(function (a, b) {
+                return d3.ascending(a.multiCoreScore, b.multiCoreScore);
+            })
+
+            var margin = {
+                top: 50,
+                right: 250,
+                bottom: 50,
+                left: 500
+            };
+
+            var width = screen.width - 25 - margin.left - margin.right,
+                height = 650 - margin.top - margin.bottom;
+
+            var svg = d3.select("#graphic2").append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            var x = d3.scale.linear()
+                .range([0, width])
+                .domain([0, d3.max(data, function (d) {
+                    return d.multiCoreScore;
+                })]);
+
+            var y = d3.scale.ordinal()
+                .rangeRoundBands([height, 0], .1)
+                .domain(data.map(function (d) {
+                    return d.model;
+                }));
+
+            var yAxis = d3.svg.axis()
+                .scale(y)
+                .tickSize(0)
+                .orient("left");
+
+            var gy = svg.append("g")
+                .attr("class", "y axis")
+                .call(yAxis);
+
+            var bars = svg.selectAll(".bar")
+                .data(data)
+                .enter()
+                .append("g");
+
+            bars.append("rect")
+                .attr("class", "bar")
+                .attr("fill", function (d) {
+                    if (d.type == 1) {
+                        return "rgb(255,150,50)";
+                    }
+                    return "rgb(40,180,255)";
+                })
+                .attr("y", function (d) {
+                    return y(d.model);
+                })
+                .attr("height", y.rangeBand())
+                .attr("x", 0)
+                .attr("width", function (d) {
+                    return x(d.multiCoreScore);
+                });
+
+            bars.append("text")
+                .attr("class", "label")
+                .style("fill", "white")
+                .attr("y", function (d) {
+                    return y(d.model) + y.rangeBand() / 2 + 5;
+                })
+                .attr("x", function (d) {
+                    if (d.multiCoreScore > 10700)
+                        return x(d.multiCoreScore) - 48;
+                    return x(d.multiCoreScore) - 38;
+                })
+                .text(function (d) {
+                    return d.multiCoreScore;
+                });
+
+            svg.append("text")
+                .style("fill", "white")
+                .attr("x", (width / 2) - 40)
+                .attr("y", 0 - (margin.top / 2))
+                .attr("text-anchor", "middle")
+                .style("font-size", "20px")
+                .style("text-decoration", "underline")
+                .text("Multi-Core Benchscores of Top Processors");
+
+            svg.append("text")
+                .style("fill", "white")
+                .attr("class", "x label")
+                .attr("text-anchor", "middle")
+                .attr("x", (width / 2) - 40)
+                .attr("y", height + 20)
+                .style("font-size", "18px")
+                .text("Bench Score");
+
+            svg.append("text")
+                .style("fill", "white")
+                .attr("class", "y label")
+                .attr("text-anchor", "end")
+                .attr("x", 0 - 200)
+                .attr("y", 0 - 20)
+                .style("font-size", "18px")
+                .text("Model");
+
+            svg.append("text")
+                .style("fill", "white")
+                .attr("x", (width / 2) - 40)
+                .attr("y", height + 40)
+                .attr("text-anchor", "middle")
+                .style("font-size", "12px")
+                .style("text-decoration", "underline")
+                .text("(sourced from geekbench.com)");
+
+            svg.append('rect')
+                .attr('x', 1000 - 200)
+                .attr('y', 500)
+                .attr('width', 20)
+                .attr('height', 20)
+                .attr('stroke', 'black')
+                .attr('fill', "rgb(40,180,255)");
+
+            svg.append('text')
+                .style("fill", "white")
+                .attr('x', 1030 - 200)
+                .attr('y', 515)
+                .attr("text-anchor", "left")
+                .style("font-size", "16px")
+                .text("Desktop");
+
+            svg.append('rect')
+                .attr('x', 1000 - 200)
+                .attr('y', 550)
+                .attr('width', 20)
+                .attr('height', 20)
+                .attr('stroke', 'black')
+                .attr('fill', "rgb(255,150,50)");
+
+            svg.append('text')
+                .style("fill", "white")
+                .attr('x', 1030 - 200)
+                .attr('y', 565)
+                .attr("text-anchor", "left")
+                .style("font-size", "16px")
+                .text("Mobile");
+        });
+
+    </script>
+
+    <script>
+
+
+        var margin = { top: 30, right: 150, bottom: 50, left: 300 },
+            width = screen.width - 25 - margin.left - margin.right,
+            height = 600 - margin.top - margin.bottom;
+
+        var parseDate = d3.time.format("%Y").parse;
+
+        var x = d3.time.scale().range([0, width]);
+        var y0 = d3.scale.linear().range([height, 0]);
+
+        var xAxis = d3.svg.axis().scale(x)
+            .orient("bottom").ticks(5);
+
+        var yAxisLeft = d3.svg.axis().scale(y0)
+            .orient("left").ticks(5);
+
+
+        var valueline = d3.svg.line()
+            .x(function (d) { return x(d.year); })
+            .y(function (d) { return y0(d.numTrans); });
+
+        var svg = d3.select("body")
+            .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        // Get the data
+        d3.csv("https://raw.githubusercontent.com/NotCarbonatedWater/Final-Project-CS-360/main/numTran.csv", function (error, data) {
+            data.forEach(function (d) {
+                d.year = parseDate(d.year);
+                d.numTrans = +d.numTrans;
+            });
+
+            // Scale the range of the data
+            x.domain(d3.extent(data, function (d) { return d.year; }));
+            y0.domain([0, d3.max(data, function (d) {
+                return Math.max(d.numTrans);
+            })]);
+
+            svg.append("path")        // Add the valueline path.
+                .attr("d", valueline(data));
+
+            svg.append("g")            // Add the X Axis
+                .style("fill", "white")
+
+                .attr("class", "x axis")
+                .attr("transform", "translate(0," + height + ")")
+                .call(xAxis);
+
+            svg.append("g")
+                .attr("class", "y axis")
+                .style("fill", "white")
+                .call(yAxisLeft);
+
+            svg.append("text")
+                .style("fill", "white")
+                .attr("x", (width / 2) - 40)
+                .attr("y", 0 - (margin.top / 2))
+                .attr("text-anchor", "middle")
+                .style("font-size", "20px")
+                .style("text-decoration", "underline")
+                .text("Number of Transitors in processors over the years");
+
+            svg.append("text")
+                .attr("class", "x label")
+                .style("fill", "white")
+                .attr("text-anchor", "middle")
+                .attr("x", (width / 2) - 40)
+                .attr("y", height + 50)
+                .style("font-size", "18px")
+                .text("Year (1971 - 2019)");
+
+            svg.append("text")
+                .style("fill", "white")
+                .attr("class", "y label")
+                .attr("text-anchor", "end")
+                .attr("x", 0 - 10)
+                .attr("y", 0 - 10)
+                .style("font-size", "18px")
+                .text("Number of Transitors");
+
+        });
+
+
+    </script>
+
+    <p>
+    </p>
 
 </body>
+
+</html>
