@@ -106,6 +106,8 @@
 			<hr style="width:200px" class="w3-opacity">
 		</div>
 		<div id="graphic4"></div>
+		<div id="graphic5"></div>
+		<div id="graphic6"></div>
 
 	</div>
 
@@ -601,11 +603,200 @@
 				.style("font-size", "12px")
 				.style("text-decoration", "underline")
 				.text("(sourced from macrotrends.net)");
-
-
 		});
 
 	</script>
+
+<script>
+
+  d3.csv("https://raw.githubusercontent.com/NotCarbonatedWater/Final-Project-CS-360/main/MacroTrends_Data_Download_AMD.csv", function (data) {
+
+    var margin = { top: 30, right: 150, bottom: 80, left: 300 },
+      width = screen.width - 25 - margin.left - margin.right,
+      height = 600 - margin.top - margin.bottom;
+
+    var parseDate = d3.time.format("%Y-%m-%d").parse;
+
+    var x = d3.time.scale().range([0, width]);
+    var y0 = d3.scale.linear().range([height, 0]);
+
+    var xAxis = d3.svg.axis().scale(x)
+      .orient("bottom").ticks(5);
+
+    var yAxisLeft = d3.svg.axis().scale(y0)
+      .orient("left").ticks(5);
+
+
+    var valueline = d3.svg.line()
+      .x(function (d) { return x(d.date); })
+      .y(function (d) { return y0(d.close); });
+
+    var svg = d3.select("#graphic5").append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    // Get the data
+    data.forEach(function (d) {
+      d.date = parseDate(d.date);
+      d.close = +d.close;
+    });
+
+    // Scale the range of the data
+    x.domain(d3.extent(data, function (d) { return d.date; }));
+    y0.domain([0, d3.max(data, function (d) {
+      return Math.max(d.close);
+    })]);
+
+    svg.append("path")        // Add the valueline path.
+      .attr("d", valueline(data));
+
+    svg.append("g")            // Add the X Axis
+      .style("fill", "white")
+
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+    svg.append("g")
+      .attr("class", "y axis")
+      .style("fill", "white")
+      .call(yAxisLeft);
+    svg.append("text")
+      .style("fill", "white")
+      .attr("x", (width / 2) - 40)
+      .attr("y", 0 - (margin.top / 2))
+      .attr("text-anchor", "middle")
+      .style("font-size", "20px")
+      .style("text-decoration", "underline")
+      .text("AMD's 38 Year Stock Price History");
+
+    svg.append("text")
+      .attr("class", "x label")
+      .style("fill", "white")
+      .attr("text-anchor", "middle")
+      .attr("x", (width / 2) - 40)
+      .attr("y", height + 50)
+      .style("font-size", "18px")
+      .text("Year (1980 - 2021)");
+
+    svg.append("text")
+      .style("fill", "white")
+      .attr("class", "y label")
+      .attr("text-anchor", "end")
+      .attr("x", 0 - 10)
+      .attr("y", 0 - 10)
+      .style("font-size", "18px")
+      .text("Number of Transitors");
+
+    svg.append("text")
+      .style("fill", "white")
+      .attr("x", (width / 2) - 40)
+      .attr("y", 25 - (margin.top / 2))
+      .attr("text-anchor", "middle")
+      .style("font-size", "12px")
+      .style("text-decoration", "underline")
+      .text("(sourced from macrotrends.net)");
+  });
+
+</script>
+
+
+<script>
+
+  d3.csv("https://raw.githubusercontent.com/NotCarbonatedWater/Final-Project-CS-360/main/MacroTrends_Data_Download_INTC.csv", function (data) {
+
+    var margin = { top: 30, right: 150, bottom: 80, left: 300 },
+      width = screen.width - 25 - margin.left - margin.right,
+      height = 600 - margin.top - margin.bottom;
+
+    var parseDate = d3.time.format("%Y-%m-%d").parse;
+
+    var x = d3.time.scale().range([0, width]);
+    var y0 = d3.scale.linear().range([height, 0]);
+
+    var xAxis = d3.svg.axis().scale(x)
+      .orient("bottom").ticks(5);
+
+    var yAxisLeft = d3.svg.axis().scale(y0)
+      .orient("left").ticks(5);
+
+
+    var valueline = d3.svg.line()
+      .x(function (d) { return x(d.date); })
+      .y(function (d) { return y0(d.close); });
+
+    var svg = d3.select("#graphic6").append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    // Get the data
+    data.forEach(function (d) {
+      d.date = parseDate(d.date);
+      d.close = +d.close;
+    });
+
+    // Scale the range of the data
+    x.domain(d3.extent(data, function (d) { return d.date; }));
+    y0.domain([0, d3.max(data, function (d) {
+      return Math.max(d.close);
+    })]);
+
+    svg.append("path")        // Add the valueline path.
+      .attr("d", valueline(data));
+
+    svg.append("g")            // Add the X Axis
+      .style("fill", "white")
+
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+    svg.append("g")
+      .attr("class", "y axis")
+      .style("fill", "white")
+      .call(yAxisLeft);
+    svg.append("text")
+      .style("fill", "white")
+      .attr("x", (width / 2) - 40)
+      .attr("y", 0 - (margin.top / 2))
+      .attr("text-anchor", "middle")
+      .style("font-size", "20px")
+      .style("text-decoration", "underline")
+      .text("Intel's 41 Year Stock Price History");
+
+    svg.append("text")
+      .attr("class", "x label")
+      .style("fill", "white")
+      .attr("text-anchor", "middle")
+      .attr("x", (width / 2) - 40)
+      .attr("y", height + 50)
+      .style("font-size", "18px")
+      .text("Year (1980 - 2021)");
+
+    svg.append("text")
+      .style("fill", "white")
+      .attr("class", "y label")
+      .attr("text-anchor", "end")
+      .attr("x", 0 - 10)
+      .attr("y", 0 - 10)
+      .style("font-size", "18px")
+      .text("Number of Transitors");
+
+    svg.append("text")
+      .style("fill", "white")
+      .attr("x", (width / 2) - 40)
+      .attr("y", 25 - (margin.top / 2))
+      .attr("text-anchor", "middle")
+      .style("font-size", "12px")
+      .style("text-decoration", "underline")
+      .text("(sourced from macrotrends.net)");
+  });
+
+</script>
 
 </body>
 
