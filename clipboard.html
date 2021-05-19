@@ -1,150 +1,153 @@
-<!-- reference: https://bl.ocks.org/hrecht/f84012ee860cb4da66331f18d588eee3 -->
-<!-- reference: https://bl.ocks.org/d3noob/ddd7129c4486085937eb28da0d22a240 -->
-<!-- reference: https://www.w3schools.com/w3css/tryw3css_templates_dark_portfolio.htm -->
-
 <!DOCTYPE html>
-<html>
-<title>Final Project</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<style>
-	body,
-	h1,
-	h2,
-	h3,
-	h4,
-	h5,
-	h6 {
-		font-family: "Montserrat", sans-serif
-	}
+<head>
+  <meta charset="utf-8">
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <style>
+    text{
+      font-size: 16px;
+      font-family: Open Sans, sans-serif;
+    }
+    text.title{
+      font-size: 24px;
+      font-weight: 500;
+    }
+      text.subTitle{
+        font-weight: 500;
+        fill: #777777;
+      }
+      text.caption{
+        font-weight: 400;
+        font-size: 14px;
+        fill: #777777;
+      }
+      text.label{
+        font-weight: 600;
+      }
+    
+      text.valueLabel{
+       font-weight: 300;
+      }
+    
+      text.yearText{
+        font-size: 64px;
+        font-weight: 700;
+        opacity: 0.25;
+      }
+      .tick text {
+        fill: #777777;
+      }
+      .xAxis .tick:nth-child(2) text {
+        text-anchor: start;
+      }
+      .tick line {
+        shape-rendering: CrispEdges;
+        stroke: #dddddd;
+      }
+      .tick line.origin{
+        stroke: #aaaaaa;
+      }
+      path.domain{
+        display: none;
+      }
+  </style>
+</head>
 
-	.axis {
-		stroke: white;
-		font: 12px "Montserrat", sans-serif;
-	}
+<body>
+  <script>
+   fetch('https://api.covid19india.org/states_daily.json')
+ .then(res => res.json())
+ .then(data=> {
+    const totalCovidDataState = data.states_daily 
+    const groupedData = processData(totalCovidDataState);
+    console.log(groupedData); 
+    plotChart(groupedData)
+ })
+ async function plotChart(data) {
+    const svg = d3.select("#chart")
+    const width = svg.node().clientWidth;
+    const height = svg.node().clientHeight;
+    const ticker = 500;
 
-	path {
-		stroke: red;
-		stroke-width: 2;
-		fill: none;
-	}
-
-	.axis path {
-		stroke: white;
-	}
-
-	.axis line {
-		fill: none;
-		shape-rendering: crispEdges;
-	}
-
-	.line {
-		fill: none;
-		stroke: white;
-		stroke-width: 2px;
-	}
-
-	.annotation-note-title,
-	text.title {
-		font-weight: bold;
-	}
-</style>
-
-<body class="w3-black">
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
-
-
-
-	<!-- Page Content -->
-	<div class="w3-padding-large" id="main">
-		<!-- Header/Home -->
-		<header class="w3-container w3-padding-32 w3-center w3-black" id="home">
-			<h1 class="w3-jumbo"><span class="w3-hide-small">Final Project: </span>Mobile Processor Evolution</h1>
-			<a href="https://github.com/NotCarbonatedWater/Final-Project-CS-360">Github Link</a>
-			<p>By Jonathan Jaco</p>
-			<p>CS 360 - Section 1</p>
-			<img src="apple-m1-chip.jpg" alt="apple-m1-chip" class="w3-image" width="992" height="1108">
-		</header>
-
-
-		<div id="graphic3"></div>
-
-
-	</div>
-
-
-
-
-	<script>
-
-		d3.csv("https://raw.githubusercontent.com/NotCarbonatedWater/Final-Project-CS-360/main/MacroTrends_Data_Download_AAPL.csv", function (data) {
-
-			var margin = { top: 30, right: 150, bottom: 50, left: 300 },
-				width = screen.width - 25 - margin.left - margin.right,
-				height = 600 - margin.top - margin.bottom;
-
-			var parseDate = d3.time.format("%Y-%m-%d").parse;
-
-			var x = d3.time.scale().range([0, width]);
-			var y0 = d3.scale.linear().range([height, 0]);
-
-			var xAxis = d3.svg.axis().scale(x)
-				.orient("bottom").ticks(5);
-
-			var yAxisLeft = d3.svg.axis().scale(y0)
-				.orient("left").ticks(5);
+    const dateList = Array.from(data.keys())
+    const fontSize = 16;
+    const rectProperties = {height: 20, padding: 10}
+    const container = svg.append("g")
+                            .classed("container", true)
+                            .style("transform", "translateY(25px)")
 
 
-			var valueline = d3.svg.line()
-				.x(function (d) { return x(d.date); })
-				.y(function (d) { return y0(d.close); });
+    const widthScale = d3.scaleLinear()
+    const axisTop = svg
+                    .append('g')
+                    .classed('axis', true)
+                    .style("transform", "translate(10px, 20px)")
+                    .call(d3.axisTop(widthScale))
 
-			var svg = d3.select("#graphic3").append("svg")
-				.attr("width", width + margin.left + margin.right)
-				.attr("height", height + margin.top + margin.bottom)
-				.append("g")
-				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    const update = (date) =>  {
 
-			// Get the data
-			data.forEach(function (d) {
-				d.date = parseDate(d.date);
-				d.close = +d.close;
-			});
+        const presentData = processEachDateData(data.get(date).get("Confirmed")[0])
+        widthScale.domain([0, d3.max(Object.values(presentData), d => d.value)])
+                  .range([0, width - fontSize - 50])
 
-			// Scale the range of the data
-			x.domain(d3.extent(data, function (d) { return d.date; }));
-			y0.domain([0, d3.max(data, function (d) {
-				return Math.max(d.close);
-			})]);
+        axisTop                
+            .transition()
+            .duration(ticker / 1.2)
+            .ease(d3.easeLinear)
+            .call(d3.axisTop(widthScale))
 
-			svg.append("path")        // Add the valueline path.
-				.attr("d", valueline(data));
+        const sortedRange = [...presentData].sort((a,b) => b.value - a.value)
 
-			svg.append("g")            // Add the X Axis
-				.style("fill", "white")
+        container
+            .selectAll("text")
+            .data(presentData)
+            .enter()
+            .append("text")
 
-				.attr("class", "x axis")
-				.attr("transform", "translate(0," + height + ")")
-				.call(xAxis);
+        container
+            .selectAll("text")
+            .text(d => d.key + " "+ d.value)
+            .transition()
+            .delay(500)
+            .attr("x", d => widthScale(d.value) + fontSize)
+            .attr("y", (d,i) => sortedRange.findIndex(e => e.key === d.key) * (rectProperties.height + rectProperties.padding) + fontSize) 
 
-			svg.append("g")
-				.attr("class", "y axis")
-				.style("fill", "white")
-				.call(yAxisLeft);
+        container
+            .selectAll("rect")
+            .data(presentData)
+            .enter()
+            .append("rect")
 
+        container
+            .selectAll("rect")
+            .attr("x", 10)
+            .transition()
+            .delay(500)
+            .attr("y", (d,i) => sortedRange.findIndex(e => e.key === d.key) * (rectProperties.height + rectProperties.padding))
+            .attr("width", d => d.value <= 0? 0 : widthScale(d.value))
+            .attr("height", 20)
 
+    }
+    for (const date of dateList) {
+       update(date)
+       await new Promise(done => setTimeout(() => done(), ticker));
+    } 
+}
 
-		});
+function processData(data) { 
+    return d3.group(data, d => d.date, e => e.status);
+}
 
-	</script>
+function processEachDateData(data) {
+    //remove status and date
+    delete data.date
+    delete data.status
+    delete data.tt // tt is total 
 
-	<p> data
-	</p>
+    return Object.keys(data)
+            .map(key => ({key, value: parseInt(data[key])}))
+            // .sort((a,b) => b.value-a.value) 
+}
+  
 
-
+  </script>
 </body>
-
-</html>
