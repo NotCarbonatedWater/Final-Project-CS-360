@@ -27,7 +27,7 @@
 	}
 
 	path {
-		stroke: red;
+		stroke: white;
 		stroke-width: 2;
 		fill: none;
 	}
@@ -51,6 +51,22 @@
 	text.title {
 		font-weight: bold;
 	}
+
+	.tick line {
+		stroke: #C0C0BB;
+	}
+
+	.tick text {
+		fill: #8E8883;
+		font-size: 15pt;
+		font-family: sans-serif;
+	}
+
+	.axis-label {
+		fill: #635F5D;
+		font-size: 20pt;
+		font-family: sans-serif;
+
 </style>
 
 <body class="w3-black">
@@ -108,6 +124,7 @@
 		<div id="graphic4"></div>
 		<div id="graphic5"></div>
 		<div id="graphic6"></div>
+		<div id="graphic7"></div>
 
 	</div>
 
@@ -607,197 +624,315 @@
 
 	</script>
 
-<script>
+	<script>
 
-  d3.csv("https://raw.githubusercontent.com/NotCarbonatedWater/Final-Project-CS-360/main/MacroTrends_Data_Download_AMD.csv", function (data) {
+		d3.csv("https://raw.githubusercontent.com/NotCarbonatedWater/Final-Project-CS-360/main/MacroTrends_Data_Download_AMD.csv", function (data) {
 
-    var margin = { top: 30, right: 150, bottom: 80, left: 300 },
-      width = screen.width - 25 - margin.left - margin.right,
-      height = 600 - margin.top - margin.bottom;
+			var margin = { top: 30, right: 150, bottom: 80, left: 300 },
+				width = screen.width - 25 - margin.left - margin.right,
+				height = 600 - margin.top - margin.bottom;
 
-    var parseDate = d3.time.format("%Y-%m-%d").parse;
+			var parseDate = d3.time.format("%Y-%m-%d").parse;
 
-    var x = d3.time.scale().range([0, width]);
-    var y0 = d3.scale.linear().range([height, 0]);
+			var x = d3.time.scale().range([0, width]);
+			var y0 = d3.scale.linear().range([height, 0]);
 
-    var xAxis = d3.svg.axis().scale(x)
-      .orient("bottom").ticks(5);
+			var xAxis = d3.svg.axis().scale(x)
+				.orient("bottom").ticks(5);
 
-    var yAxisLeft = d3.svg.axis().scale(y0)
-      .orient("left").ticks(5);
-
-
-    var valueline = d3.svg.line()
-      .x(function (d) { return x(d.date); })
-      .y(function (d) { return y0(d.close); });
-
-    var svg = d3.select("#graphic5").append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-    // Get the data
-    data.forEach(function (d) {
-      d.date = parseDate(d.date);
-      d.close = +d.close;
-    });
-
-    // Scale the range of the data
-    x.domain(d3.extent(data, function (d) { return d.date; }));
-    y0.domain([0, d3.max(data, function (d) {
-      return Math.max(d.close);
-    })]);
-
-    svg.append("path")        // Add the valueline path.
-      .attr("d", valueline(data));
-
-    svg.append("g")            // Add the X Axis
-      .style("fill", "white")
-
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis);
-
-    svg.append("g")
-      .attr("class", "y axis")
-      .style("fill", "white")
-      .call(yAxisLeft);
-    svg.append("text")
-      .style("fill", "white")
-      .attr("x", (width / 2) - 40)
-      .attr("y", 0 - (margin.top / 2))
-      .attr("text-anchor", "middle")
-      .style("font-size", "20px")
-      .style("text-decoration", "underline")
-      .text("AMD's 38 Year Stock Price History");
-
-    svg.append("text")
-      .attr("class", "x label")
-      .style("fill", "white")
-      .attr("text-anchor", "middle")
-      .attr("x", (width / 2) - 40)
-      .attr("y", height + 50)
-      .style("font-size", "18px")
-      .text("Year (1980 - 2021)");
-
-    svg.append("text")
-      .style("fill", "white")
-      .attr("class", "y label")
-      .attr("text-anchor", "end")
-      .attr("x", 0 - 10)
-      .attr("y", 0 - 10)
-      .style("font-size", "18px")
-      .text("Number of Transitors");
-
-    svg.append("text")
-      .style("fill", "white")
-      .attr("x", (width / 2) - 40)
-      .attr("y", 25 - (margin.top / 2))
-      .attr("text-anchor", "middle")
-      .style("font-size", "12px")
-      .style("text-decoration", "underline")
-      .text("(sourced from macrotrends.net)");
-  });
-
-</script>
+			var yAxisLeft = d3.svg.axis().scale(y0)
+				.orient("left").ticks(5);
 
 
-<script>
+			var valueline = d3.svg.line()
+				.x(function (d) { return x(d.date); })
+				.y(function (d) { return y0(d.close); });
 
-  d3.csv("https://raw.githubusercontent.com/NotCarbonatedWater/Final-Project-CS-360/main/MacroTrends_Data_Download_INTC.csv", function (data) {
+			var svg = d3.select("#graphic5").append("svg")
+				.attr("width", width + margin.left + margin.right)
+				.attr("height", height + margin.top + margin.bottom)
+				.append("g")
+				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    var margin = { top: 30, right: 150, bottom: 80, left: 300 },
-      width = screen.width - 25 - margin.left - margin.right,
-      height = 600 - margin.top - margin.bottom;
+			// Get the data
+			data.forEach(function (d) {
+				d.date = parseDate(d.date);
+				d.close = +d.close;
+			});
 
-    var parseDate = d3.time.format("%Y-%m-%d").parse;
+			// Scale the range of the data
+			x.domain(d3.extent(data, function (d) { return d.date; }));
+			y0.domain([0, d3.max(data, function (d) {
+				return Math.max(d.close);
+			})]);
 
-    var x = d3.time.scale().range([0, width]);
-    var y0 = d3.scale.linear().range([height, 0]);
+			svg.append("path")        // Add the valueline path.
+				.attr("d", valueline(data));
 
-    var xAxis = d3.svg.axis().scale(x)
-      .orient("bottom").ticks(5);
+			svg.append("g")            // Add the X Axis
+				.style("fill", "white")
 
-    var yAxisLeft = d3.svg.axis().scale(y0)
-      .orient("left").ticks(5);
+				.attr("class", "x axis")
+				.attr("transform", "translate(0," + height + ")")
+				.call(xAxis);
+
+			svg.append("g")
+				.attr("class", "y axis")
+				.style("fill", "white")
+				.call(yAxisLeft);
+			svg.append("text")
+				.style("fill", "white")
+				.attr("x", (width / 2) - 40)
+				.attr("y", 0 - (margin.top / 2))
+				.attr("text-anchor", "middle")
+				.style("font-size", "20px")
+				.style("text-decoration", "underline")
+				.text("AMD's 38 Year Stock Price History");
+
+			svg.append("text")
+				.attr("class", "x label")
+				.style("fill", "white")
+				.attr("text-anchor", "middle")
+				.attr("x", (width / 2) - 40)
+				.attr("y", height + 50)
+				.style("font-size", "18px")
+				.text("Year (1980 - 2021)");
+
+			svg.append("text")
+				.style("fill", "white")
+				.attr("class", "y label")
+				.attr("text-anchor", "end")
+				.attr("x", 0 - 10)
+				.attr("y", 0 - 10)
+				.style("font-size", "18px")
+				.text("Number of Transitors");
+
+			svg.append("text")
+				.style("fill", "white")
+				.attr("x", (width / 2) - 40)
+				.attr("y", 25 - (margin.top / 2))
+				.attr("text-anchor", "middle")
+				.style("font-size", "12px")
+				.style("text-decoration", "underline")
+				.text("(sourced from macrotrends.net)");
+		});
+
+	</script>
 
 
-    var valueline = d3.svg.line()
-      .x(function (d) { return x(d.date); })
-      .y(function (d) { return y0(d.close); });
+	<script>
 
-    var svg = d3.select("#graphic6").append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+		d3.csv("https://raw.githubusercontent.com/NotCarbonatedWater/Final-Project-CS-360/main/MacroTrends_Data_Download_INTC.csv", function (data) {
 
-    // Get the data
-    data.forEach(function (d) {
-      d.date = parseDate(d.date);
-      d.close = +d.close;
-    });
+			var margin = { top: 30, right: 150, bottom: 80, left: 300 },
+				width = screen.width - 25 - margin.left - margin.right,
+				height = 600 - margin.top - margin.bottom;
 
-    // Scale the range of the data
-    x.domain(d3.extent(data, function (d) { return d.date; }));
-    y0.domain([0, d3.max(data, function (d) {
-      return Math.max(d.close);
-    })]);
+			var parseDate = d3.time.format("%Y-%m-%d").parse;
 
-    svg.append("path")        // Add the valueline path.
-      .attr("d", valueline(data));
+			var x = d3.time.scale().range([0, width]);
+			var y0 = d3.scale.linear().range([height, 0]);
 
-    svg.append("g")            // Add the X Axis
-      .style("fill", "white")
+			var xAxis = d3.svg.axis().scale(x)
+				.orient("bottom").ticks(5);
 
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis);
+			var yAxisLeft = d3.svg.axis().scale(y0)
+				.orient("left").ticks(5);
 
-    svg.append("g")
-      .attr("class", "y axis")
-      .style("fill", "white")
-      .call(yAxisLeft);
-    svg.append("text")
-      .style("fill", "white")
-      .attr("x", (width / 2) - 40)
-      .attr("y", 0 - (margin.top / 2))
-      .attr("text-anchor", "middle")
-      .style("font-size", "20px")
-      .style("text-decoration", "underline")
-      .text("Intel's 41 Year Stock Price History");
 
-    svg.append("text")
-      .attr("class", "x label")
-      .style("fill", "white")
-      .attr("text-anchor", "middle")
-      .attr("x", (width / 2) - 40)
-      .attr("y", height + 50)
-      .style("font-size", "18px")
-      .text("Year (1980 - 2021)");
+			var valueline = d3.svg.line()
+				.x(function (d) { return x(d.date); })
+				.y(function (d) { return y0(d.close); });
 
-    svg.append("text")
-      .style("fill", "white")
-      .attr("class", "y label")
-      .attr("text-anchor", "end")
-      .attr("x", 0 - 10)
-      .attr("y", 0 - 10)
-      .style("font-size", "18px")
-      .text("Number of Transitors");
+			var svg = d3.select("#graphic6").append("svg")
+				.attr("width", width + margin.left + margin.right)
+				.attr("height", height + margin.top + margin.bottom)
+				.append("g")
+				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    svg.append("text")
-      .style("fill", "white")
-      .attr("x", (width / 2) - 40)
-      .attr("y", 25 - (margin.top / 2))
-      .attr("text-anchor", "middle")
-      .style("font-size", "12px")
-      .style("text-decoration", "underline")
-      .text("(sourced from macrotrends.net)");
-  });
+			// Get the data
+			data.forEach(function (d) {
+				d.date = parseDate(d.date);
+				d.close = +d.close;
+			});
 
-</script>
+			// Scale the range of the data
+			x.domain(d3.extent(data, function (d) { return d.date; }));
+			y0.domain([0, d3.max(data, function (d) {
+				return Math.max(d.close);
+			})]);
 
-</body>
+			svg.append("path")        // Add the valueline path.
+				.attr("d", valueline(data));
+
+			svg.append("g")            // Add the X Axis
+				.style("fill", "white")
+
+				.attr("class", "x axis")
+				.attr("transform", "translate(0," + height + ")")
+				.call(xAxis);
+
+			svg.append("g")
+				.attr("class", "y axis")
+				.style("fill", "white")
+				.call(yAxisLeft);
+			svg.append("text")
+				.style("fill", "white")
+				.attr("x", (width / 2) - 40)
+				.attr("y", 0 - (margin.top / 2))
+				.attr("text-anchor", "middle")
+				.style("font-size", "20px")
+				.style("text-decoration", "underline")
+				.text("Intel's 41 Year Stock Price History");
+
+			svg.append("text")
+				.attr("class", "x label")
+				.style("fill", "white")
+				.attr("text-anchor", "middle")
+				.attr("x", (width / 2) - 40)
+				.attr("y", height + 50)
+				.style("font-size", "18px")
+				.text("Year (1980 - 2021)");
+
+			svg.append("text")
+				.style("fill", "white")
+				.attr("class", "y label")
+				.attr("text-anchor", "end")
+				.attr("x", 0 - 10)
+				.attr("y", 0 - 10)
+				.style("font-size", "18px")
+				.text("Number of Transitors");
+
+			svg.append("text")
+				.style("fill", "white")
+				.attr("x", (width / 2) - 40)
+				.attr("y", 25 - (margin.top / 2))
+				.attr("text-anchor", "middle")
+				.style("font-size", "12px")
+				.style("text-decoration", "underline")
+				.text("(sourced from macrotrends.net)");
+		});
+
+	</script>
+
+
+	<body>
+		<svg width="1800" height="800"></svg>
+		<script>
+
+			const xValue = d => d.date;
+			const xLabel = 'Year (1980 - 2020)';
+			const yValue = d => d.close;
+			const yLabel = 'Close ($ per stock)';
+			const margin = { left: 350, right: 50, top: 75, bottom: 100 };
+			const name = d => d.name;
+
+
+
+			const svg = d3.select('svg');
+			const width = svg.attr('width');
+			const height = svg.attr('height');
+			const innerWidth = width - margin.left - margin.right;
+			const innerHeight = height - margin.top - margin.bottom;
+
+			const g = svg.append('g')
+				.attr('transform', `translate(${margin.left},${margin.top})`);
+			const xAxisG = g.append('g')
+				.attr('transform', `translate(0, ${innerHeight})`);
+			const yAxisG = g.append('g');
+
+			xAxisG.append('text')
+				.attr('class', 'axis-label')
+				.attr('x', innerWidth / 2)
+				.attr('y', 100)
+				.style("fill", "white")
+				.text(xLabel);
+
+			yAxisG.append('text')
+				.attr('class', 'axis-label')
+				.attr('x', -innerHeight / 2)
+				.attr('y', -60)
+				.attr('transform', `rotate(-90)`)
+				.style('text-anchor', 'middle')
+				.style("fill", "white")
+				.text(yLabel);
+
+			yAxisG.append('text')
+				.style("fill", "white")
+				.attr("x", (width / 2) - 40)
+				.attr("y", 0 - (margin.top / 2))
+				.attr("text-anchor", "middle")
+				.style("font-size", "20px")
+				.style("text-decoration", "underline")
+				.text("Stock Values (Apple, AMD, Intel)");
+
+			const xScale = d3.time.scale().range([0, width]);
+			const yScale = d3.scale.linear();
+
+			// const xAxis = d3.axisBottom()
+			// 	.scale(xScale)
+			// 	.tickPadding(15)
+			// 	.tickSize(-innerHeight);
+			const xAxis = d3.svg.axis().scale(xScale)
+				.orient("bottom").ticks(5)
+				.scale(xScale)
+				.tickPadding(15)
+
+				.tickSize(-innerHeight);
+
+			// const yAxis = d3.axisLeft()
+			// 	.scale(yScale)
+			// 	.ticks(5)
+			// 	.tickPadding(15)
+			// 	.tickSize(-innerWidth);
+			var yAxis = d3.svg.axis().scale(yScale)
+				.orient("left").ticks(5)
+				.scale(yScale)
+				.ticks(5)
+				.tickPadding(15)
+
+				.tickSize(-innerWidth);
+
+			const row = d => {
+				d.date = new Date(d.date);
+				d.close = +d.close;
+				return d;
+			};
+
+			d3.csv("https://raw.githubusercontent.com/NotCarbonatedWater/Final-Project-CS-360/main/raceData.csv", row, data => {
+				xScale
+					.domain(d3.extent(data, xValue))
+					.range([0, innerWidth])
+					.nice();
+
+				yScale
+					.domain(d3.extent(data, yValue))
+					.range([innerHeight, 0])
+					.nice();
+
+				g.selectAll("#graphic7").data(data)
+					.enter().append('circle')
+					.attr('cx', d => xScale(xValue(d)))
+					.attr('cy', d => yScale(yValue(d)))
+					.attr('fill-opacity', 0.6)
+					.style("fill", function (d) {
+						if (d.name == "Intel") {
+							return "#0000FF";
+						} else if (d.name == "Apple") {
+							return "#808080";
+						} else {
+							return "#FF0000";
+						}
+					})
+
+
+					.attr('r', 1);
+
+				xAxisG.call(xAxis);
+				yAxisG.call(yAxis);
+			});
+		</script>
+
+	</body>
 
 </html>
